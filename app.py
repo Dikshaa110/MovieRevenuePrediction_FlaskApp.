@@ -47,21 +47,28 @@ except ImportError as e:
 # ======================
 # 3. MODEL LOADING (Protected)
 # ======================
+import cloudpickle
+import streamlit as st
+
 try:
-    model_bundle = joblib.load("stacked_movie_revenue_model.joblib")
+    with open("stacked_movie_revenue_model.pkl", "rb") as f:
+        model_bundle = cloudpickle.load(f)
     model = model_bundle["model"]
     expected_features = model_bundle["features"]
+
 except Exception as e:
     st.error(f"""
     ## ⚠️ Model Loading Failed
     **Error:** {str(e)}
     
     Please ensure:
-    1. `stacked_movie_revenue_model.joblib` exists in your project
+    1. `stacked_movie_revenue_model.pkl` exists in your project
     2. The file is not corrupted
     3. You have sufficient permissions
+    4. You saved the model using `cloudpickle`, not `joblib`
     """)
     st.stop()
+
 import streamlit as st
 import pandas as pd
 import joblib
